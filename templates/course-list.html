@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mooc Online -免费课程</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- 兼容移动设备 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<!-- 让IE的文档渲染模式永远都是最新的 -->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
+<meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" type="text/css" href="/static/css/common.css">
+<link rel="stylesheet" type="text/css" href="/static/css/freecourse.css">
+<link rel="stylesheet" type="text/css" href="/static/css/footer.css">
+<link rel="stylesheet" type="text/css" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/style/common.css" />
+<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+<style>
+.menu .item a,.download,.shop-cart,.login a,.login{
+	color: #9ca0a4;
+}
+.menu .item a:hover{
+	color: #fff;
+}
+.menu .item a.menu-item-select{
+	color: #fff;
+}
+.search-input{
+	color: #fff;
+}
+.blank{
+    height: 180px;
+}
+.header-blue{
+    background: #393D49;
+}
+
+</style>
+    <!-- blank 没有搜索结果时中间留白 -->
+</head>
+<body>
+	<!-- header菜单栏 -->
+	<div class="header header-blue">
+    <div class="header-wrap">
+		<a class="home" href="{% url 'index' %}" title="Mooc Online">
+			<img src="/static/img/logo_196x106.png" alt="">
+		</a>
+
+		<ul class="menu">
+            <li class="item"><a href="{% url 'index' %}">首页</a></li>
+			<li class="item"><a href="{% url 'course:course_list' %}">免费课程</a></li>
+			<li class="item"><a href="{% url 'users:discovery' %}">发现</a></li>
+		</ul>
+        <div class="search-area">
+			<input class="search-input" id="search_keywords" value="" type="text">
+			<div class="search-btn" id="jsSearchBtn"><i class="icon icon-search">&#xe63d;</i></div>
+		</div>
+		<ul class="header-unlogin clearfix">
+			<!--<li class="shop-cart">
+				<i class="icon icon-cart">&#xe61d;</i>
+				<span>购物车</span>
+				<div class="shop-cart-detail hide">
+					<p class="title"><span>我的购物车</span><span>已加入0门课程</span></p>
+					<div class="content">
+						<span><i class="icon">&#xe61d;</i></span>
+						<p>购物车空空如也</p>
+						<span></span>
+						<p>快去这里选购你中意的课程</p>
+						<a href="#">实战课程</a>
+						<a href="#">职业路径</a>
+					</div>
+					<p class="about-order"><a href="">我的订单中心</a><span>去购物车</span></p>
+				</div>
+			</li>
+			<-->
+
+
+			 {% if request.user.is_authenticated %}
+             <li class="user-card-box fl">
+                    <a href="" class="user-card-item tc">
+                        <img src="{{ MEDIA_URL }}{{ request.user.image }}" alt="" class="vm" />
+                    </a>
+                    <div class="g-user-card">
+                        <div class="card-inner">
+                            <div class="card-top">
+                                <a href="">
+                                    <img src="{{ MEDIA_URL }}{{ request.user.image }}" alt="" />
+                                </a>
+                                <div class="card-top-right-box">
+                                    <a href="" class="name">{{ request.user.nick_name }}</a>
+                                    <p class="meta clearfix">
+                                        <a href="">经验 <b id="js-user-mp">30</b></a>
+                                        <a href=""> 积分 <b id="js-user-credit">0</b></a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="user-center-box">
+                                <ul class="clearfix">
+                                    <li>
+                                        <a href="{% url 'users:mycourse' %}">
+                                            <span class="iconfont icon-gaojing"></span>
+                                            &nbsp;我的课程
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'users:user_info' %}">
+                                            <span class="iconfont icon-gaojing"></span>
+                                            &nbsp;个人中心
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                            <p class="card-sets">
+                                <a href="{% url 'logout' %}">安全退出</a>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                 <li class="login">
+				<a href="{% url 'login' %}">登录</a>
+
+				<a href="{% url 'register' %}">注册</a>
+			</li>
+            {% endif %}
+
+
+		</ul>
+    </div>
+	</div>
+	<!-- 菜单栏 -->
+	<div class="menu-content">
+		<div class="menu-wrap">
+			<div class="category clearfix">
+				<div class="fangxiang">方向：</div>
+				<div class="fangxiang-content">
+
+                    <a href="?sort={{ sort }}&c1=&iseasy={{ is_easy }}" class="{% if c1 == '' or c1 is null %}menu-select{% endif %}">全部</a>
+
+					<a href="?sort={{ sort }}&c1=前端开发&iseasy={{ is_easy }}" class="{% if c1 == '前端开发' %}menu-select{% endif %}">前端开发</a>
+
+					<a href="?sort={{ sort }}&c1=后端开发&iseasy={{ is_easy }}" class="{% if c1 == '后端开发' %}menu-select{% endif %}">后端开发</a>
+
+					<a href="?sort={{ sort }}&c1=算法&iseasy={{ is_easy }}" class="{% if c1 == '算法' %}menu-select{% endif %}">算法&amp;数学</a>
+
+					<a href="?sort={{ sort }}&c1=运维&iseasy={{ is_easy }}" class="{% if c1 == '运维' %}menu-select{% endif %}">运维&amp;测试</a>
+
+					<a href="?sort={{ sort }}&c1=数据库&iseasy={{ is_easy }}" class="{% if c1 == '数据库' %}menu-select{% endif %}">数据库</a>
+
+				</div>
+				
+			</div>
+			<div class="category clearfix">
+				<div class="fangxiang">分类：</div>
+				<div class="fangxiang-content">
+					<a href="?sort={{ sort }}&c1={{ c1 }}&c2=&iseasy={{ is_easy }}" class="{% if c2 == '' or c2 is null %}menu-select{% endif %}" >全部</a>
+                    {% if c1 == '前端开发' or c1 == '' or c1 is null %}
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=HTMLCSS&iseasy={{ is_easy }}" class="{% if c2 == 'HTMLCSS'  %}menu-select{% endif %}">HTML/CSS</a>
+					    <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Bootstrap&iseasy={{ is_easy }}" class="{% if c2 == 'Bootstrap'  %}menu-select{% endif %}">Bootstrap</a>
+                    {% endif %}
+                    {% if c1 == '后端开发' or c1 == '' or c1 is null %}
+					    <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Java&iseasy={{ is_easy }}" class="{% if c2 == 'Java'  %}menu-select{% endif %}">Java</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Python&iseasy={{ is_easy }}" class="{% if c2 == 'Python'  %}menu-select{% endif %}">Python</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Django&iseasy={{ is_easy }}" class="{% if c2 == 'Django'  %}menu-select{% endif %}">Django</a>
+                    {% endif %}
+                    {% if c1 == '算法' or c1 == '' or c1 is null %}
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=算法与数据结构&iseasy={{ is_easy }}" class="{% if c2 == '算法与数据结构'  %}menu-select{% endif %}">算法与数据结构</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=数学&iseasy={{ is_easy }}" class="{% if c2 == '数学'  %}menu-select{% endif %}">数学</a>
+                    {% endif %}
+                    {% if c1 == '运维' or c1 == '' or c1 is null %}
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Linux&iseasy={{ is_easy }}" class="{% if c2 == 'Linux'  %}menu-select{% endif %}">Linux</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=测试&iseasy={{ is_easy }}" class="{% if c2 == '测试'  %}menu-select{% endif %}">测试</a>
+                    {% endif %}
+                    {% if c1 == '数据库' or c1 == '' or c1 is null %}
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=MySQL&iseasy={{ is_easy }}" class="{% if c2 == 'MySQL'  %}menu-select{% endif %}">MySQL</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=Oracle&iseasy={{ is_easy }}" class="{% if c2 == 'Oracle'  %}menu-select{% endif %}">Oracle</a>
+                        <a href="?sort={{ sort }}&c1={{ c1 }}&c2=SQL Server&iseasy={{ is_easy }}" class="{% if c2 == 'SQL Server'  %}menu-select{% endif %}">SQL Server</a>
+                    {% endif %}
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	<!-- 具体内容 -->
+	<div class="main-content">
+		<div class="main-wrap">
+			<div class="main-title">
+				<div class="hot">
+					<a href="?sort=last&c1={{ c1 }}&c2={{ c2 }}&iseasy={{ is_easy }}" class="{% if sort == "last" or sort is null or sort == '' %}
+					a-select{% endif %}">最新</a>
+					<a href="?sort=pop&c1={{ c1 }}&c2={{ c2 }}&iseasy={{ is_easy }}" {% ifequal sort 'pop' %}class="a-select"{% endifequal %}>最热</a>
+				</div>
+				<div class="page">
+					<span class="page-wrap"><span>
+                        {{ current_page }}
+                    </span>/<span>{{ page_nums }}</span></span>
+					<span class="left"><i class="icon">&#xe628;</i></span>
+					<span class="right"><i class="icon">&#xe78b;</i></span>
+				</div>
+				<div class="difficuty">
+					<span>难度：</span>	
+					<a href="?sort={{ sort }}&c1={{ c1 }}&c2={{ c2 }}" {% if is_easy is null or is_easy == ''%}class="a-select"{% endif %}>全部</a>
+					<a href="?sort={{ sort }}&c1={{ c1 }}&c2={{ c2 }}&is_easy=1" {% ifequal is_easy '1' %}class="a-select"{% endifequal %}>初级</a>
+					<a href="?sort={{ sort }}&c1={{ c1 }}&c2={{ c2 }}&is_easy=2" {% ifequal is_easy '2' %}class="a-select"{% endifequal %}>中级</a>
+					<a href="?sort={{ sort }}&c1={{ c1 }}&c2={{ c2 }}&is_easy=3" {% ifequal is_easy '3' %}class="a-select"{% endifequal %}>高级</a>
+				</div>
+			</div>
+
+			<!-- 免费课程内容内容 -->
+
+			<div class="courses clearfix">
+                {% for course in all_courses.object_list %}
+				<div class="course-card">
+					<div class="course-img">
+                        <a href="{% url "course:course_info" course.id %}">
+						    <img src="{{ MEDIA_URL }}{{ course.image }}" alt="">
+                        </a>
+					</div>
+
+                    <p class="course-name"> {{ course.name }}</p>
+
+					<p class="course-count"><span>{{ course.get_degree_display }}</span><i class="icon">&#xe646;</i><span>{{ course.stu_nums }}</span></p>
+					<p class="course-desc">{{ course.desc }}</p>
+				</div>
+                {% endfor %}
+			</div>
+
+
+            {% if page_nums == 0 %}
+                <div class="courses clearfix">
+                    <div class="blank">
+
+                    </div>
+                </div>
+            {% endif %}
+
+
+			<!-- 分页 -->
+            {% if page_nums > 1 %}
+            <div class="pagenation">
+			<nav aria-label="Page navigation">
+                <ul class="pagination pagination-lg">
+                    {% if all_courses.has_previous %}
+                        <li>
+                              <a href="?{{ all_courses.previous_page_number.querystring }}" aria-label="Previous">
+                                <span aria-hidden="true">上一页</span>
+                              </a>
+                        </li>
+                    {% endif %}
+                {% if not all_courses.has_previous %}
+                    <li class="disabled">
+                        <span>
+                            <span aria-hidden="true">上一页</span>
+                        </span>
+                    </li>
+                {% endif %}
+
+                {% for page in all_courses.pages %}
+                    {% if page %}
+                    <li class=""><a href="?{{ page.querystring }}">{{ page }}</a></li>
+
+                    {% else %}
+                        <span class="num"><a href="">...</a></span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if all_courses.has_next %}
+                    <li>
+                          <a href="?{{ all_courses.next_page_number.querystring }}" aria-label="Next">
+                            <span aria-hidden="true">下一页</span>
+                          </a>
+                    </li>
+                {% endif %}
+
+                {% if not all_courses.has_next %}
+                    <li class="disabled">
+                        <span>
+                            <span aria-hidden="true">下一页</span>
+                        </span>
+                    </li>
+                {% endif %}
+                </ul>
+            </nav>
+            </div>
+        {% endif %}
+		</div>
+
+	
+
+	</div>
+	<!-- footer -->
+	<div class="footer footer-black">
+		<div class="footer-wrap">
+			<div class="blog">
+				<div class="mr22 chat">
+					
+				</div>
+			</div>
+			<div class="footer-links links-white">
+				<a href="">联系我们</a>
+				<a href="">常见问题</a>
+				<a href="">意见反馈</a>
+				<a href="">友情链接</a>
+			</div>
+			<p>© 2019 silentlight.tk</p>
+		</div>
+	</div>
+	<!-- 侧边栏 -->
+	<div class="info">
+		<div class="info-wrap">
+			<div class="info-block b"><i class="icon">&#xe61e;</i></div>
+			<div class="info-block b"><i class="icon">&#xe619;</i></div>
+			<div class="info-block b"><i class="icon">&#xe61a;</i>
+		
+			</div>
+			<div class="info-block"><i class="icon">&#xe62b;</i>
+				
+			</div>
+		</div>
+		
+	</div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-3.2.0.min.js"></script>
+<script type="text/javascript" src="/static/js/common.js"></script>
+<script type="text/javascript" src="/static/js/deco-common.js"></script>
+<script type="text/javascript" src="/static/js/swiper-3.4.2.min.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/deco-common.js"></script>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mooc Online - 免费编程教育</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- 兼容移动设备 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<!-- 让IE的文档渲染模式永远都是最新的 -->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
+<meta http-equiv="Expires" content="0" />
+<link rel="stylesheet" type="text/css" href="/static/css/swiper-3.4.2.min.css">
+<link rel="stylesheet" type="text/css" href="/static/css/common.css">
+<link rel="stylesheet" type="text/css" href="/static/css/index.css">
+<link rel="stylesheet" href="/static/css/style/common.css" />
+</head>
+<body>
+	<!-- header菜单栏 -->
+	<div class="header header-white">
+    <div class="header-wrap">
+		<a class="home" href="{% url 'index' %}" title="Mooc Online">
+			<img src="/static/img/logo_196x106.png" alt="">
+		</a>
+
+		<ul class="menu">
+            <li class="item"><a href="{% url 'index' %}">首页</a></li>
+			<li class="item"><a href="{% url 'course:course_list' %}">免费课程</a></li>
+			<li class="item"><a href="{% url 'users:discovery' %}">发现</a></li>
+		</ul>
+        <div class="search-area">
+			<input class="search-input" id="search_keywords" value="" type="text">
+			<div class="search-btn" id="jsSearchBtn"><i class="icon icon-search">&#xe63d;</i></div>
+		</div>
+		<ul class="header-unlogin clearfix">
+			<!--<li class="shop-cart">
+				<i class="icon icon-cart">&#xe61d;</i>
+				<span>购物车</span>
+				<div class="shop-cart-detail hide">
+					<p class="title"><span>我的购物车</span><span>已加入0门课程</span></p>
+					<div class="content">
+						<span><i class="icon">&#xe61d;</i></span>
+						<p>购物车空空如也</p>
+						<span></span>
+						<p>快去这里选购你中意的课程</p>
+						<a href="#">实战课程</a>
+						<a href="#">职业路径</a>
+					</div>
+					<p class="about-order"><a href="">我的订单中心</a><span>去购物车</span></p>
+				</div>
+			</li>
+			<-->
+
+
+			 {% if request.user.is_authenticated %}
+             <li class="user-card-box fl">
+                    <a href="" class="user-card-item tc">
+                        <img src="{{ MEDIA_URL }}{{ request.user.image }}" alt="" class="vm" />
+                    </a>
+                    <div class="g-user-card">
+                        <div class="card-inner">
+                            <div class="card-top">
+                                <a href="">
+                                    <img src="{{ MEDIA_URL }}{{ request.user.image }}" alt="" />
+                                </a>
+                                <div class="card-top-right-box">
+                                    <a href="" class="name">{{ request.user.nick_name }}</a>
+                                    <p class="meta clearfix">
+                                        <a href="">经验 <b id="js-user-mp">30</b></a>
+                                        <a href=""> 积分 <b id="js-user-credit">0</b></a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="user-center-box">
+                                <ul class="clearfix">
+                                    <li>
+                                        <a href="{% url 'users:mycourse' %}">
+                                            <span class="iconfont icon-gaojing"></span>
+                                            &nbsp;我的课程
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'users:user_info' %}">
+                                            <span class="iconfont icon-gaojing"></span>
+                                            &nbsp;个人中心
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+
+                            <p class="card-sets">
+                                <a href="{% url 'logout' %}">安全退出</a>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                 <li class="login">
+				<a href="{% url 'login' %}">登录</a>
+
+				<a href="{% url 'register' %}">注册</a>
+			</li>
+            {% endif %}
+
+
+		</ul>
+    </div>
+	</div>
+
+    <!-- banner -->
+    <div class="banner">
+		<div class="banner-wrap">
+				<div class="banner-img">
+					<div class="swiper-wrapper">
+                        {% for banner in all_banner %}
+			                <div class="swiper-slide" data-swiper-autoplay="3000" style="background-image:url({{ MEDIA_URL }}{{ banner.image }})"></div>
+                        {% endfor %}
+			        </div>
+
+			        <div class="swiper-pagination swiper-pagination-white"></div>
+
+			        <div class="swiper-button-next swiper-button-white"></div>
+			        <div class="swiper-button-prev swiper-button-white"></div>
+				</div>
+		</div>
+	</div>
+
+    <!-- 实战推荐 -->
+	<div class="shizhan">
+		<div class="shizhan-wrap">
+			<h3 class="shizhan-title">
+				<span class="i-shizhan-l"></span>
+				<em>猜</em>/<em>你</em>/<em>喜</em>/<em>欢</em>
+				<span class="i-shizhan-r"></span>
+			</h3>
+			<div class="shizhan-content">
+                {% for course in courses %}
+				    <a href="{% url 'course:course_info' course.id %}" {% if forloop.counter|divisibleby:'5' %}class="content-item"{% else %}class="content-item mr18"{% endif %}>
+					<div class="img">
+						<span class="tag">{{ course.classify_detail.name }}</span>
+						<img src="{{ MEDIA_URL }}{{ course.image }}" alt="">
+					</div>
+					<p class="shizhan-desc">{{ course.desc }}</p>
+					<div class="card-info">
+
+						<span>{{ course.get_degree_display }}</span>
+						<span><i class="icon icon-user">&#xe646;</i>{{ course.stu_nums }}</span>
+						<span style="margin-right: 0px;color: #ff9900;"><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i></span>
+					</div>
+				</a>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+    <!-- 新上好课 -->
+	<div class="newcourse">
+		<div class="newcourse-wrap">
+			<h3 class="newcourse-title">
+				<span class="i-newcourse-l"></span>
+				<em>优</em>/<em>质</em>/<em>课</em>/<em>程</em>
+				<span class="i-newcourse-r"></span>
+			</h3>
+			<div class="newcourse-content">
+				<div class="line-content clearfix">
+					{% for course in new_courses %}
+				    <a href="{% url 'course:course_info' course.id %}" {% if forloop.counter|divisibleby:'5' %}class="content-item"{% else %}class="content-item mr18"{% endif %}>
+					<div class="img">
+						<span class="tag">{{ course.classify_detail.name }}</span>
+						<img src="{{ MEDIA_URL }}{{ course.image }}" alt="">
+					</div>
+					<p class="shizhan-desc">{{ course.desc }}</p>
+					<div class="card-info">
+
+						<span>{{ course.get_degree_display }}</span>
+						<span><i class="icon icon-user">&#xe646;</i>{{ course.stu_nums }}</span>
+						<span style="margin-right: 0px;color: #ff9900;"><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i><i class="icon icon-star">&#xe676;</i></span>
+					</div>
+				</a>
+				{% endfor %}
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<!-- footer -->
+	<div class="footer">
+		<div class="footer-wrap">
+			<div class="blog">
+				<div class="mr22 chat">
+
+				</div>
+			</div>
+			<div class="footer-links">
+				<a href="">联系我们</a>
+				<a href="">常见问题</a>
+				<a href="">意见反馈</a>
+				<a href="">友情链接</a>
+			</div>
+			<p>© 2019 http://silentlight.tk</p>
+		</div>
+	</div>
+
+<script type="text/javascript" src="/static/js/deco-common.js"></script>
+<script type="text/javascript" src="/static/js/jquery-3.2.0.min.js"></script>
+<script type="text/javascript" src="/static/js/swiper-3.4.2.min.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/deco-common.js"></script>
+</body>
+</html>
